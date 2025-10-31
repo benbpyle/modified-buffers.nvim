@@ -96,7 +96,7 @@ Built out of a need for a simple, focused way to see which buffers have unsaved 
 
 ## License
 
-MIT
+BSD 3-Clause - see [LICENSE](LICENSE) for details
 
 ## Contributing
 
