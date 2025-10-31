@@ -19,10 +19,19 @@ function M.show()
   local has_devicons, devicons = pcall(require, 'nvim-web-devicons')
 
   for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-    if vim.api.nvim_buf_get_option(bufnr, 'modified') then
+    local buftype = vim.api.nvim_buf_get_option(bufnr, 'buftype')
+    local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype')
+    local is_modified = vim.api.nvim_buf_get_option(bufnr, 'modified')
+
+    -- Check if this is an oil buffer with pending changes
+    local is_oil_modified = false
+    if filetype == 'oil' and is_modified then
+      -- Oil buffers DO get marked as modified when they have pending changes
+      is_oil_modified = true
+    end
+
+    if is_modified then
       local fullpath = vim.api.nvim_buf_get_name(bufnr)
-      local buftype = vim.api.nvim_buf_get_option(bufnr, 'buftype')
-      local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype')
 
       local filename, icon, icon_hl
 
@@ -46,7 +55,7 @@ function M.show()
         else
           filename = '[Oil]'
         end
-        icon = '' -- Folder icon
+        icon = '󰉋' -- Folder icon (nerd font)
         icon_hl = 'Directory'
       else
         -- Regular file buffers
