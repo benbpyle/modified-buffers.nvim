@@ -21,14 +21,28 @@ function M.show()
   for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
     if vim.api.nvim_buf_get_option(bufnr, 'modified') then
       local fullpath = vim.api.nvim_buf_get_name(bufnr)
-      local filename = fullpath ~= '' and vim.fn.fnamemodify(fullpath, ':t') or '[No Name]'
+      local buftype = vim.api.nvim_buf_get_option(bufnr, 'buftype')
+      local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype')
 
-      -- Get file icon if available
-      local icon = '󰈚' -- Default file icon
-      local icon_hl = ''
-      if has_devicons and fullpath ~= '' then
-        local ext = vim.fn.fnamemodify(fullpath, ':e')
-        icon, icon_hl = devicons.get_icon(filename, ext, { default = true })
+      local filename, icon, icon_hl
+
+      -- Check if this is an oil buffer
+      if filetype == 'oil' then
+        -- Oil buffers show directory paths
+        filename = fullpath ~= '' and fullpath or '[Oil]'
+        icon = '' -- Folder icon
+        icon_hl = 'Directory'
+      else
+        -- Regular file buffers
+        filename = fullpath ~= '' and vim.fn.fnamemodify(fullpath, ':t') or '[No Name]'
+
+        -- Get file icon if available
+        icon = '󰈚' -- Default file icon
+        icon_hl = ''
+        if has_devicons and fullpath ~= '' then
+          local ext = vim.fn.fnamemodify(fullpath, ':e')
+          icon, icon_hl = devicons.get_icon(filename, ext, { default = true })
+        end
       end
 
       -- Format: "icon filename"
