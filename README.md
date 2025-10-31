@@ -2,8 +2,6 @@
 
 A lightweight Neovim plugin to quickly view and navigate to modified buffers in a clean floating window.
 
-![Modified Buffers Demo](https://via.placeholder.com/600x200?text=Screenshot+Coming+Soon)
-
 ## Features
 
 - 🎨 Clean floating window with file icons (using nvim-web-devicons)
