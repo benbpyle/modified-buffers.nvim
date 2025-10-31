@@ -29,7 +29,23 @@ function M.show()
       -- Check if this is an oil buffer
       if filetype == 'oil' then
         -- Oil buffers show directory paths
-        filename = fullpath ~= '' and fullpath or '[Oil]'
+        if fullpath ~= '' then
+          -- Try to show path relative to cwd, or fall back to last 2-3 dir components
+          local cwd = vim.fn.getcwd()
+          local relative = vim.fn.fnamemodify(fullpath, ':~:.')
+
+          -- If the path is outside cwd or relative path is too long, just show last few dirs
+          if vim.startswith(relative, '..') or #relative > 40 then
+            -- Show last 2-3 directory components
+            local parts = vim.split(fullpath, '/', { plain = true })
+            local num_parts = math.min(3, #parts)
+            filename = table.concat({ unpack(parts, #parts - num_parts + 1) }, '/')
+          else
+            filename = relative
+          end
+        else
+          filename = '[Oil]'
+        end
         icon = '' -- Folder icon
         icon_hl = 'Directory'
       else
